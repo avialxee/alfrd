@@ -9,7 +9,7 @@ setup(
     url='https://gitlab.ia.forth.gr/smile/alfred/',
     author='Avinash Kumar',
     author_email='avialxee@gmail.com',
-    description='ALFRED: Autonomous Logistical Framework for Relaxed Execution and Data Management.',
+    description='Automated Logical FRamework for Executing scripts Dynamically (ALFRED)',
     py_modules = ["alfred"],
     package_dir={'':'src'},
     classifiers=["Programming Language :: Python :: 3",
@@ -22,7 +22,7 @@ setup(
     long_description=desc,
     long_description_content_type = "text/markdown",
     install_requires=[ "google-api-python-client", "google-auth-httplib2", "google-auth-oauthlib", "gspread",
-                        "pandas", "numpy",
+                        "pandas", "numpy", "psutil",
                         "protobuf==3.19.6"
                       ],
     extras_require = {
