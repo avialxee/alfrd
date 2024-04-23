@@ -18,7 +18,7 @@ class GSC:
     def open(self):
         self.workbook       =   self.client.open_by_key(self.sid)
         self.sheet          =   self.workbook.get_worksheet(self.w)
-        self.df             =   pd.DataFrame(self.sheet.get_all_records())
+        self.df             =   pd.DataFrame(self.sheet.get_all_records(numericise_ignore=['all']))
         print("Success!")
         return self.df
 
