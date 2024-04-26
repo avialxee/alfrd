@@ -81,7 +81,7 @@ from alfrd.util import timeinmin, read_inputfile
 url='https://spreadsheet/link'
 worksheet='worksheet-name'
 
-gsc = GSC(url=url, wname=worksheet)
+gsc = GSC(url=url, wname=worksheet, key='path/to/json/file')      # default path for key = home/usr/.alfred
 _ = gsc.open()
 ```
 
