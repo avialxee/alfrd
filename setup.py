@@ -4,13 +4,13 @@ with open("README.md", "r") as rdme:
     desc = rdme.read()
 
 setup(
-    name = 'alfred',
-    version = '0.0.1',
-    url='https://gitlab.ia.forth.gr/smile/alfred/',
+    name = 'alfrd',
+    version = '0.0.2',
+    url='https://gitlab.ia.forth.gr/smile/alfrd/',
     author='Avinash Kumar',
     author_email='avialxee@gmail.com',
-    description='Automated Logical FRamework for Executing scripts Dynamically (ALFRED)',
-    py_modules = ["alfred"],
+    description='Automated Logical FRamework for script execution Dynamically(ALFRD)',
+    py_modules = ["alfrd"],
     package_dir={'':'src'},
     classifiers=["Programming Language :: Python :: 3",
                  "Programming Language :: Python :: 3.6",
@@ -21,7 +21,7 @@ setup(
                  ],
     long_description=desc,
     long_description_content_type = "text/markdown",
-    install_requires=[ "google-api-python-client", "google-auth-httplib2", "google-auth-oauthlib", "gspread",
+    install_requires=[ "google-api-python-client", "google-auth-httplib2", "google-auth-oauthlib", "gspread", "gspread-formatting",
                         "pandas", "numpy", "psutil",
                         "protobuf==3.19.6"
                       ],
@@ -31,7 +31,7 @@ setup(
     },
      entry_points={ 
         "console_scripts": [
-            "alfred=alfred:cli"
+            "alfrd=alfrd:cli"
         ],
     },
 
