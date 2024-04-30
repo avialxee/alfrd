@@ -187,3 +187,11 @@ r4 = lf.create_rule(range='F2:F105', type='TEXT_CONTAINS', c='r', value='fail') 
 print(r1,r2,r3,r4)
 lf.add_conditional_format(r1, r2, r3, r4)
 ```
+
+### Attribution
+
+When using ALFRD, please add a link to this repository in a footnote.
+
+### Acknowledgement
+
+ALFRD was developed within the "Search for Milli-Lenses" (SMILE) project. SMILE has received funding from the European Research Council (ERC) under the HORIZON ERC Grants 2021 programme (grant agreement No. 101040021).
