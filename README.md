@@ -59,8 +59,8 @@ NOTE: In order to successfully create a google console project a billing detail 
 
 ### 2. Installing
 
-- Download [ALFRD](https://gitlab.ia.forth.gr/smile/alfrd) and unzip / Or 
-   `git clone https://gitlab.ia.forth.gr/smile/alfrd`
+- Download [ALFRD](https://github.com/avialxee/alfrd) and unzip / Or 
+   `git clone https://github.com/avialxee/alfrd`
    
 - install alfrd
     ```

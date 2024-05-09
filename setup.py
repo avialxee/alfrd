@@ -6,7 +6,7 @@ with open("README.md", "r") as rdme:
 setup(
     name = 'alfrd',
     version = '0.0.2',
-    url='https://gitlab.ia.forth.gr/smile/alfrd/',
+    url='https://github.com/avialxee/alfrd/',
     author='Avinash Kumar',
     author_email='avialxee@gmail.com',
     description='Automated Logical FRamework for script execution Dynamically(ALFRD)',
