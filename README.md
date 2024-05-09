@@ -59,15 +59,17 @@ NOTE: In order to successfully create a google console project a billing detail 
 
 ### 2. Installing
 
-- Download [ALFRD](https://github.com/avialxee/alfrd) and unzip / Or 
-   `git clone https://github.com/avialxee/alfrd`
-   
-- install alfrd
-    ```
+- Install using the pip package manager:
+  ```bash
+  pip install alfrd
+  ```
+- Alternatively Download [ALFRD](https://github.com/avialxee/alfrd) and unzip / Or 
+    ```bash
+   git clone https://github.com/avialxee/alfrd
    cd alfrd/
    pip install .
     ```
-    this should install alfrd and all the dependencies automatically.
+this should install alfrd and all the dependencies automatically.
     
 
 ### 3. Using ALFRD
