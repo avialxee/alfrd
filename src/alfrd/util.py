@@ -15,8 +15,6 @@ def read_inputfile(folder,inputfile='.inp'):
     """
     params = defaultdict(list)
     input_folder= None
-    # params['array_type']='generic'
-    
     files=glob.glob(f'{folder}/*{inputfile}',recursive=True)
     if not files: files=glob.glob(f'{folder}/*/*{inputfile}',recursive=False)
     if not files: files=glob.glob(f'{folder}/*/*/*{inputfile}',recursive=False)

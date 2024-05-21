@@ -139,10 +139,16 @@ class LogFrame:
         """
         Returns boolean by matching value in cell
         """
+        colname = self.working_col if not colname else colname
         v = self.get_value(colname)
         return str(value) == str(v)
     
     def put_value(self, value, colname='', count=0):
+        """
+        puts value to the colname if specified else uses working_col for the colname
+        returns +1 for the counter value
+        Note: This only modifies data in the DataFrame
+        """
         colname = self.working_col if not colname else colname
         count = self.col_data(colname=colname, data=value, count=count)
         return count
