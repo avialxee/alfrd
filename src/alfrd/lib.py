@@ -56,6 +56,11 @@ class LogFrame:
     :primary_colname:     primary column name for unique identifier
     :registered:        keeps count of success and failed script runs in a tuple (count_success, count_failed)
 
+    TODO :  register scripts to be able to call them from the terminal \
+            e.g:
+            $ alfrd --register alfred-pipe.py
+            $ alfrd --step_name
+
     """
     def __init__(self, gsc , primary_value='',  primary_colname='FILE_NAME'):
         self.gsc                =   gsc
