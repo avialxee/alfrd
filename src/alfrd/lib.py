@@ -1,7 +1,7 @@
 import gspread
 from google.oauth2.service_account import Credentials
 import pandas as pd
-import re
+import re, time
 from pathlib import Path
 import warnings
 from alfrd import c
@@ -51,6 +51,7 @@ class LogFrame:
     ---
 
     :gsc:               Google Spreadsheet Credentials instance
+                        To use a local dataframe, initialize with lf = LogFrame(gsc = my_df ,....) and lf.df_sheet = my_df
     :primary_value:     the unique identifier of the row corrosponding to the primary_colname
     :primary_colname:     primary column name for unique identifier
     :registered:        keeps count of success and failed script runs in a tuple (count_success, count_failed)
@@ -62,8 +63,12 @@ class LogFrame:
         self.primary_value      =   primary_value
         self.primary_colname    =   primary_colname
         self.working_col        =   ''
+        self.working_cols       =   []
+        self.t0                 =   time.time()
         
+
         self.registered         =   0,0         # (count_success, count_failed)
+        self.update_cooldown_count   =   0
         self.color ={'g': Color(red=0.56,green=0.77,blue=0.49),
                 'r': Color(red=0.8784314,green=0.4,blue=0.4),
                 'rh': Color(red=0.71,green=0.13,blue=0.0),
@@ -135,6 +140,14 @@ class LogFrame:
         r = str(colv).strip()
         return r
     
+    def get_previous_working_col(self):
+        prev_col = None
+        if len(self.working_cols)>=2 and (self.working_col in self.working_cols):
+                pcol_idx    =   (self.working_cols).index(self.working_col) - 1
+                prev_col = self.working_cols[pcol_idx] if pcol_idx!=-1 else None
+
+        return prev_col
+    
     def isvalue(self, value, colname=''):
         """
         Returns boolean by matching value in cell
@@ -157,16 +170,26 @@ class LogFrame:
         """
         updates the google sheet if there is atleast one new count/failed count for the update
         """
+        # -----  Cool down update to keep it below 60 request/minute
+        tf                          =   time.time()
+        td                          =   tf-self.t0
+
+        if td<=1 and (self.update_cooldown_count >=  1) and (count - self.registered[0] or failed - self.registered[1]):
+            time.sleep(1)
+            self.update_cooldown_count   =   0
+            
         try:
             if count - self.registered[0] or failed - self.registered[1]:
                 self.gsc.update(self.df_sheet)
-                self.registered = count, failed            
+                self.update_cooldown_count       +=  1
+                self.registered = count, failed       
             else:
                 print('skipped')
         except Exception as e:
             print(f'failed to update on google sheet: {e}')
             failed  =   self.col_data(colname=comment_col, data=f'failed:{e}', count=failed)
             self.df_sheet.to_csv(csvfile)
+        self.t0                      =   time.time()
 
     def create_conditional_format(self, range, c='g', valtype='timeinmin', custom_clr=None):
         clr = self.color[c] if not custom_clr else custom_clr

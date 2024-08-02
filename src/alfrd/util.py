@@ -1,7 +1,7 @@
 import numpy as np
 from pathlib import Path
 import os
-import subprocess, glob, shutil, time
+import subprocess, glob, shutil, time, json
 from collections import defaultdict
 
 def read_inputfile(folder,inputfile='.inp'):
@@ -43,6 +43,12 @@ def read_inputfile(folder,inputfile='.inp'):
                             params[k.strip()]=v
     return params, files, input_folder
 
+
+def read_metafile(metafile):
+    with open(metafile, 'r') as sf:
+        metad                       =   sf.read()
+        meta                        =   json.loads(metad)
+    return meta
 
 def find_size(fitsfile):
     size = np.round(Path(fitsfile).stat().st_size/(1024*1024),2)
@@ -153,11 +159,12 @@ def del_fl(ifolder, count, fl='*ms*', rm=False):
     """
     delete files from the input folder
     """
-    filefound = glob.glob(f"{ifolder}/../{fl}")
+    wd          =   Path(ifolder).parent
+    filefound = glob.glob(f"{str(wd)}/{fl}")
     if len(filefound):
         cmd = ['rm','-rf']
-        cmd.extend(str(Path(ifolder.parent) / " ".join(filefound)).split(' '))
-        print(cmd)
+        cmd.extend(str( wd / " ".join(filefound)).split(' '))
+        print(" ".join(cmd))
         count+=1
         if rm: subprocess.run(cmd)
     return count
