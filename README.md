@@ -5,11 +5,17 @@ This program is written for the [SMILE project](smilescience.info) supported by 
 - Communicate with google spreadsheets and update progress periodically when required.
 - Run pipeline based on the spreadsheet progress/requirements.
 
+Contents:
+1. [Create API credentials on Google Cloud](#1-create-api-credentials-on-google-cloud)
+2. [Installing](#2-installing)
+3. [Using ALFRD](#3-using-alfrd)
+4. [Attribution](#4-attribution)
+5. [Acknowledgement](#5-acknowledgement)
 
-### 1. Create API credentials on Google Cloud
+## 1. Create API credentials on Google Cloud
 
 
-A similar guide is available [here](https://www.cybrosys.com/blog/how-to-use-gspread-python-api)
+A similar guide is available [here](https://developers.google.com/workspace/guides/create-credentials) or [https://developers.google.com/workspace/guides/create-credentials](https://developers.google.com/workspace/guides/create-credentials)
 
 NOTE: In order to successfully create a google console project a billing detail is usually required. But the sheets API service is available for free, refer [here](https://developers.google.com/sheets/api/limits)
 
@@ -57,7 +63,7 @@ NOTE: In order to successfully create a google console project a billing detail 
 - step 13
   Go to the Google spreadsheet and "share" the sheet to the email address that was copied, as Editor.
 
-### 2. Installing
+## 2. Installing
 
 - Install using the pip package manager:
   ```bash
@@ -72,7 +78,7 @@ NOTE: In order to successfully create a google console project a billing detail 
 this should install alfrd and all the dependencies automatically.
     
 
-### 3. Using ALFRD
+## 3. Using ALFRD
 
 ##### Example 1 : Initializing and creating instance
 
@@ -190,10 +196,10 @@ print(r1,r2,r3,r4)
 lf.add_conditional_format(r1, r2, r3, r4)
 ```
 
-### Attribution
+## 4. Attribution
 
 When using ALFRD, please add a link to this repository in a footnote.
 
-### Acknowledgement
+## 5. Acknowledgement
 
 ALFRD was developed within the "Search for Milli-Lenses" (SMILE) project. SMILE has received funding from the European Research Council (ERC) under the HORIZON ERC Grants 2021 programme (grant agreement No. 101040021).
