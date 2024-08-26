@@ -29,7 +29,7 @@ def get_functionnames(tree=None, modulfile=None, match='', classes=True):
                 return params
 
 parser = argparse.ArgumentParser('alfrd', description="""
-Automated Logical FRamework for script execution Dynamically(ALFRD)
+Automated Logical FRamework for Dynamic script execution(ALFRD)
 """, 
 formatter_class=argparse.RawDescriptionHelpFormatter, add_help=False)
 

@@ -9,7 +9,7 @@ setup(
     url='https://github.com/avialxee/alfrd/',
     author='Avinash Kumar',
     author_email='avialxee@gmail.com',
-    description='Automated Logical FRamework for script execution Dynamically(ALFRD)',
+    description='Automated Logical FRamework for Dynamic script execution(ALFRD)',
     py_modules = ["alfrd"],
     package_dir={'':'src'},
     classifiers=["Programming Language :: Python :: 3",
