@@ -1,6 +1,6 @@
 # ALFRD : Automated Logical FRamework for Dynamic script execution(ALFRD)
 
-This program is written for the [SMILE project](smilescience.info) supported by the ERC starting grant, particularly with following purposes in mind:
+This program is written for the [SMILE project](https://smilescience.info) supported by the ERC starting grant, particularly with following purposes in mind:
 
 - Communicate with google spreadsheets and update progress periodically when required.
 - Run pipeline based on the spreadsheet progress/requirements.
