@@ -80,6 +80,8 @@ this should install alfrd and all the dependencies automatically.
 
 ## 3. Using ALFRD
 
+ALFRD is meant to be used as a tool to create a pipeline/workflow. The pipeline can be visualised as a tabular data e.g in a pandas dataframe table, google spreadsheet etc. For example each column may represent a pipeline step and each row corrosponds to a different dataset. A count of success and failure is kept throughout the code for housekeeping.
+
 ##### Example 1 : Initializing and creating instance
 
 ```python
@@ -90,7 +92,7 @@ url='https://spreadsheet/link'
 worksheet='worksheet-name'
 
 gsc = GSC(url=url, wname=worksheet, key='path/to/json/file')      # default path for key = home/usr/.alfred
-_ = gsc.open()
+df_sheet = gsc.open()
 ```
 
 ##### Example 2: Inititalize the framework
@@ -99,6 +101,7 @@ _ = gsc.open()
 lf = LogFrame(gsc)
 lf.primary_colname          =   'FILE_NAME'
 ```
+>The dataframe from the sheet can also be accessed through the instance `lf` using `lf.df_sheet`.
 
 ##### Example 3: Run - Iterate for each row
 
@@ -117,13 +120,18 @@ for fitsfile in allfiles:
     fitsfile_name = Path(fitsfile).name
     lf.primary_value            =   fitsfile_name
 ```
+> Here the variable `count` and `failed` is used for housekeeping the success/failure of each function call. This can be useful for ensuring minimal API calls, communication to the sheet only when there is a new update.
 
-##### Example 4: using column logic and adding values on success/failures
+##### Example 4: using column logic and adding values to the cell on success/failures
+
+Let's say we have a `result` that we need to update to the cell corrosponding to the column `Comment` and row corrosponding to the Serial Number `3`. Where `S.No.` is the column name for serial number.
 
 ```python
+lf.primary_colname          =   'S.No.'
+lf.primary_value            =   '3'
 if lf.isvalue(value='True', colname='TSYS') and lf.isval_unique('Project'):
     
-    lf.working_col          =   'Comment1'                                          # working column
+    lf.working_col          =   'Comment'                                          # working column
     print(lf.get_value())
 
     result                  =   'test'
@@ -176,10 +184,14 @@ print(lf.get_value(colname='fits to ms'))
 
 ##### Example 6: Update the sheet
 
+`lf.update_sheet` updates the changes to the spreadsheet.
+
 ```python
 lf.update_sheet(count=count, failed=failed, csvfile='df_sheet.csv')                     # if updating the sheet fails, a copy of the dataframe is saved locally at the csvfile path.
 
 ```
+
+>NOTE: The `count` and `failed` parameter corrosponds to a success/fail event on each iteration of update_sheet i.e., if the values of count/fail do not change on the current iteration, the sheet will not be updated and a `skipped` message will appear on the terminal.
 
 
 ##### Example 7: Conditional Formatting
