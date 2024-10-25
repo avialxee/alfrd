@@ -155,11 +155,11 @@ def timeinmin(td):
 
     return ret_time
 
-def del_fl(ifolder, count, fl='*ms*', rm=False):
+def del_fl(wd, count=0, fl='*ms*', rm=False):
     """
     delete files from the input folder
     """
-    wd          =   Path(ifolder).parent
+    wd          =   Path(wd)
     filefound = glob.glob(f"{str(wd)}/{fl}")
     if len(filefound):
         cmd = ['rm','-rf']
