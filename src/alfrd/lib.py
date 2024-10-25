@@ -178,7 +178,7 @@ class LogFrame:
         # -----  Cool down update to keep it below 60 request/minute
         tf                          =   time.time()
         td                          =   tf-self.t0
-
+        self.df_sheet.fillna('',inplace=True)       # avoid (NaN) errors: Out of range float values are not JSON compliant
         if td<=1 and (self.update_cooldown_count >=  1) and (count - self.registered[0] or failed - self.registered[1]):
             time.sleep(1)
             self.update_cooldown_count   =   0
