@@ -132,7 +132,7 @@ class LogFrame:
         """
         colname = self.working_col if not colname else colname
         _, colv = self.col_data(colname='', data='', count=0, chk_colname=colname)
-        c = self.df_sheet[colname].value_counts()[colv]
+        c = self.df_sheet[colname].str.strip().value_counts()[colv]
         r = False if int(c)!=1 else True
         return r
     
