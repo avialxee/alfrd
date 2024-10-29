@@ -5,7 +5,7 @@ with open("README.md", "r") as rdme:
 
 setup(
     name = 'alfrd',
-    version = '0.0.4',
+    version = '0.0.5',
     url='https://github.com/avialxee/alfrd/',
     author='Avinash Kumar',
     author_email='avialxee@gmail.com',
