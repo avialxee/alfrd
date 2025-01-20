@@ -64,7 +64,7 @@ def cli():
                             try:
                                 p_value = int(p_value)
                             except:
-                                p_value = str(p_value)
+                                p_value = str(p_value) if not any(log in p_value.lower() for log in ['true', 'false']) else p_value.lower()=='true'
                         config_dict['p'][p]= p_value
             
         with open(str(scriptdefault), 'w') as sf: 
@@ -75,7 +75,7 @@ def cli():
         args.main_method = df_params["main_method"]
         args.input_file = df_params["input_file"]
         params_dict = df_params['p']
-        
+        # print(params_dict)
             
         # addmsg = f"""
         # if __name__ == '__main__':
@@ -85,13 +85,29 @@ def cli():
         #       """
         sys.path.insert(0, str(Path(args.input_file[0]).parent))
         mod = importlib.import_module(f"{str(Path(args.input_file[0]).stem)}")
-        working_cols = eval(f"mod.{args.main_method}(**{params_dict}, setup=True)")
+        main_method         =   args.main_method
+        wco                 =   params_dict['working_col_only']
+        params_dict['working_col_only'] =   False
+        working_cols        =   eval(f"mod.{args.main_method}(**{params_dict}, setup=True)")
+        params_dict['working_col_only'] =   wco
         cols=parser.add_argument_group('cols')
         for i, parg in enumerate(working_cols):
-            cols.add_argument(f'-c{i}',f"--{parg}")
+            cols.add_argument(f'-c{i}',f"--{parg}", action='store_true')
         parser.add_argument('-h',action='help')
         args                            =   parser.parse_args()
-        
+
+
+
+        if args.input_file:
+            params_dict['primary_value']    =   args.input_file[0]
+            wc = [k for k,v in vars(args).items() if v and 'input_file' not in k]
+            if wc:
+                print(wc[0])
+                params_dict['working_col']  =   wc[0]
+            eval(f"mod.{main_method}(**{params_dict})")
+            # elif 'working_col' in params_dict:
+            #     eval(f"mod.{main_method}(**{params_dict})")
+        # if args.input_file:
         # addmsg += f"argparse.ArgumentParser('alfrd',"
         # print(eval(f"{mod}.{args.main_method}"))
         # print(eval(f"{mod}.{args.main_method}")(setup=True))

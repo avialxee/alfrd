@@ -6,7 +6,7 @@ from pathlib import Path
 import warnings
 from alfrd import c
 from gspread_formatting import ConditionalFormatRule, GridRange, BooleanCondition, BooleanRule, CellFormat, Color, get_conditional_format_rules
-
+import numpy as np
 class GSC:
     """
     Creates instance of google Google Spreadsheet Credential to open and update a worksheet
@@ -45,6 +45,13 @@ class GSC:
         self.sheet.update([dataframe.columns.values.tolist()] + dataframe.values.tolist())
         print(f"{c['g']}Updated!{c['x']}")
 
+    def update_cell(self, dataframe, i, j):
+        sheet_i,sheet_j =i+1+1,j+1                  # since gspread looks for row/column index ranging from 1 instead of 0.
+        if len(dataframe.columns.shape)>1:      # accounting for header
+            sheet_i+=dataframe.columns.shape[1]
+        self.sheet.update_cell(sheet_i, sheet_j, dataframe.iat[i,j])
+        print(f"{c['g']}Updated!{c['x']}")
+
 class LogFrame:
     """
     Input
@@ -64,6 +71,7 @@ class LogFrame:
     """
     def __init__(self, gsc , primary_value='',  primary_colname='FILE_NAME'):
         self.gsc                =   gsc
+        self.df_sheet0          =   self.gsc.df.copy(deep=True)
         self.df_sheet           =   self.gsc.df
         self.primary_value      =   primary_value
         self.primary_colname    =   primary_colname
@@ -171,7 +179,7 @@ class LogFrame:
         count = self.col_data(colname=colname, data=value, count=count)
         return count
     
-    def update_sheet(self, count, failed, comment_col='Comment4', csvfile = 'df_sheet.csv'):
+    def update_sheet(self, count, failed, by_cell=True, comment_col='Comment4', csvfile = 'df_sheet.csv'):
         """
         updates the google sheet if there is atleast one new count/failed count for the update
         """
@@ -185,8 +193,14 @@ class LogFrame:
             
         try:
             if count - self.registered[0] or failed - self.registered[1]:
-                self.gsc.update(self.df_sheet)
-                self.update_cooldown_count       +=  1
+                if not by_cell:
+                    self.gsc.update(self.df_sheet)
+                    self.update_cooldown_count       +=  1
+                else:
+                    I,J=np.where(self.df_sheet.ne(self.df_sheet0))
+                    for i,j in list(zip(I,J)):
+                        self.gsc.update_cell(self.df_sheet, i, j)
+                        self.update_cooldown_count       +=  1
                 self.registered = count, failed       
             else:
                 print('skipped')
