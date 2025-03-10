@@ -82,6 +82,85 @@ this should install alfrd and all the dependencies automatically.
 
 ALFRD is meant to be used as a tool to create a pipeline/workflow. The pipeline can be visualised as a tabular data e.g in a pandas dataframe table, google spreadsheet etc. For example each column may represent a pipeline step and each row corrosponds to a different dataset. A count of success and failure is kept throughout the code for housekeeping.
 
+### 3.1 ALFRD for Pipeline
+
+Use ALFRD decorators for the pipelines, for:
+- *Validator* : using `@validator` decorator on the function which will hold a validation rule i.e function which will be executed on the parameter values before running the pipeline step.
+- *Validate Functions* : using `@validate` decorator on the funciton which will be the pipeline step and requires one of the validator to be executed when the pipeline step is called.
+- *Register Functions* : using `@register` decorator on the funciton which will be the pipeline step
+
+> Note: If you are using Validators, then define functions in the following order - `@validator` then `@register` and finally `@validate`.
+
+##### Example : Using the ALFRD Decorators
+```python 
+# pipeline.py
+
+from alfrd.plugins import register, validate, validator
+
+@validator("for general")
+def general(params):
+"""logic for general params validation"""
+    print("general sahab validated!")
+
+@validator("for row operations")
+def row_validation(params):
+"""logic for another params validation"""
+    if "name" in params:
+        print("name validated!")
+        return True
+    else:
+        return False
+
+@validate(v=["general", "row_validation"])
+@register(desc="prints hello by name")
+def hello(name):
+    print("hello",name)
+```
+
+```bash
+$ alfrd init project_name
+$ alfrd add path/to/pipeline.py project_name
+$ alfrd --help
+ Usage: alfrd [OPTIONS] COMMAND [ARGS]...                                                                                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                                                                                                              
+╭─ Options ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --install-completion          Install completion for the current shell.                                                                                                                                                                                                                                                    │
+│ --show-completion             Show completion for the current shell, to copy it or customize the installation.                                                                                                                                                                                                             │
+│ --help                        Show this message and exit.                                                                                                                                                                                                                                                                  │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ init   Initialize the project-specific plugin directory.                                                                                                                                                                                                                                                                   │
+│ ls     List all available pipeline steps for a project.                                                                                                                                                                                                                                                                    │
+│ run    Run a specific pipeline step for a project.                                                                                                                                                                                                                                                                         │
+│ add    Add a new plugin to a specific project.                                                                                                                                                                                                                                                                             │
+│ rm     Remove a specific project.                                                                                                                                                                                                                                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+$ alfrd run hello name=Anonymous
+hello Anonymous
+
+```
+
+```bash
+$ alfrd run --help
+                                                                                                                                                                                                                                                                                                                              
+ Usage: alfrd run [OPTIONS] STEP_NAME PROJ [PARAMS]...                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                              
+ Run a specific pipeline step for a project.                                                                                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                                                                                                              
+╭─ Arguments ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ *    step_name      TEXT         [default: None] [required]                                                                                                                                                                                                                                                                │
+│ *    proj           TEXT         [default: None] [required]                                                                                                                                                                                                                                                                │
+│      params         [PARAMS]...  Key-value pairs of parameters or parameter file path (e.g., id=123 name=Test) [default: None]                                                                                                                                                                                                                    │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --help          Show this message and exit.                                                                                                                                                                                                                                                                                │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+
+```
+
+
 ##### Example 1 : Initializing and creating instance
 
 ```python

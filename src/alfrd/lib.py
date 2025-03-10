@@ -45,12 +45,38 @@ class GSC:
         self.sheet.update([dataframe.columns.values.tolist()] + dataframe.values.tolist())
         print(f"{c['g']}Updated!{c['x']}")
 
-    def update_cell(self, dataframe, i, j):
-        sheet_i,sheet_j =i+1+1,j+1                  # since gspread looks for row/column index ranging from 1 instead of 0.
-        if len(dataframe.columns.shape)>1:      # accounting for header
-            sheet_i+=dataframe.columns.shape[1]
-        self.sheet.update_cell(sheet_i, sheet_j, dataframe.iat[i,j])
-        print(f"{c['g']}Updated!{c['x']}")
+    def update_cell(self, dataframe: pd.DataFrame, I: list, J: list):
+        
+        # account for header as a row
+        sheet_I_h = len(dataframe.columns.shape[1]) if len(dataframe.columns.shape) > 1 else 1 # checks if there are more than one row else use 1 as the no. of rows in header
+        
+        # Convert row and column indices to Excel-style (1-based index)
+        sheet_I = [i + 1 + sheet_I_h for i in I]  # Offset by sheet header length
+        sheet_J = [j + 1 for j in J]  # 1-based index for columns
+
+        # Ensure that the indices are valid and non-empty
+        if not sheet_I or not sheet_J:
+            print("Error: Row or column indices are empty.")
+            return
+
+        # create a body for batch update
+        update_body     =   []
+        for ci,cj,i,j in zip(sheet_I,sheet_J,I,J):
+            cell    =   gspread.utils.rowcol_to_a1(ci,cj)
+            value   =   dataframe.iat[i,j]
+            update_body.append({
+            'range': cell,
+            'values': [[value]]
+        })
+
+        try:
+            # Use batch_update for efficiency
+            self.sheet.batch_update(update_body)
+            print(f"{c['g']}Updated!{c['x']} {len(I)} cells successfully.")
+        except gspread.exceptions.APIError as e:
+            print(f"API Error: {e}")
+        except Exception as e:
+            print(f"Error updating the sheet: {e}")
 
 class LogFrame:
     """
@@ -122,7 +148,7 @@ class LogFrame:
             
             if chk_colname :
                 if self.df_sheet.loc[primary_col_values==self.primary_value,chk_colname].count(): 
-                    val = str(self.df_sheet.loc[primary_col_values==self.primary_value,chk_colname].values[0]).strip()
+                    val = str(self.df_sheet.loc[primary_col_values==self.primary_value,chk_colname].values[0]).strip()          # searching for the first occurance of the value.
                     count+=1
                     return count, val 
                 else:
@@ -197,10 +223,9 @@ class LogFrame:
                     self.gsc.update(self.df_sheet)
                     self.update_cooldown_count       +=  1
                 else:
-                    I,J=np.where(self.df_sheet.ne(self.df_sheet0))
-                    for i,j in list(zip(I,J)):
-                        self.gsc.update_cell(self.df_sheet, i, j)
-                        self.update_cooldown_count       +=  1
+                    I, J = np.where(self.df_sheet.astype(str).ne(self.df_sheet0.astype(str)))
+                    self.gsc.update_cell(self.df_sheet, I, J)
+                    self.update_cooldown_count       +=  1
                 self.registered = count, failed       
             else:
                 print('skipped')

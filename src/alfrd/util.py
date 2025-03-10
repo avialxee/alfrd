@@ -21,7 +21,7 @@ def read_inputfile(folder,inputfile='.inp'):
     if files:
         input_folder = str(Path(files[-1]).parent) + '/'
         for filepath in files:
-            if '.inp' in filepath:
+            if inputfile in filepath:
                 with open(filepath,'r') as f:
                     pr=f.read().splitlines()
                     for p in pr:
@@ -29,20 +29,43 @@ def read_inputfile(folder,inputfile='.inp'):
                             continue
                         elif '=' in p:
                             k,v=p.split('=')
-                            try:
-                                v=int(v)
-                            except:
+                            # check for leading zeros
+                            if str(v).strip() and v.strip()[0] == '0':
+                                v   =   str(v).strip()
+                                
+                            else:
                                 try:
-                                    v=float(v)
+                                    v=int(v)
                                 except:
-                                    v=str(v).strip()     
-                                    v = v.lower() == 'true' if (any(boolv == v.lower() for boolv in ['true', 'false'])) else v
-                                        
-
-                                    # elif '//' in v or ';' in v: v=re.split('\\|;', str(v))
+                                    try:
+                                        v=float(v)
+                                    except:
+                                        v=str(v).strip()
+                                        if "*" in v:
+                                            try:
+                                                v = glob.glob(f'{v}', recursive=True)
+                                            except:
+                                                v = str(v)
+                                        else:
+                                            v = v.lower() == 'true' if (any(boolv == v.lower() for boolv in ['true', 'false'])) else v
                             params[k.strip()]=v
+                            
     return params, files, input_folder
 
+def update_existing_dict(to, from_dic):
+    """_updates values only for existing keys_
+
+    Args:
+        to (_type_): _description_
+        from_dic (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    for k,v in from_dic.items():
+        if k in to:
+            to[k]=from_dic[k]
+    return to
 
 def read_metafile(metafile):
     with open(metafile, 'r') as sf:
